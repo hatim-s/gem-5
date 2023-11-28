@@ -194,10 +194,20 @@ def addNoISAOptions(parser):
     # Enable Ruby
     parser.add_argument("--ruby", action="store_true")
 
-    # equivalence point START Dinesh
-    parser.add_argument("--equi_point",type=int, help="0: run default mode 1 : run equivalence pointwise",default=0)
-    parser.add_argument("--equi_file_name", type=str, help="Give file name of equivalence point with full path",default="/home/hatim-s/gem5/equivalence-pointstxt")
-   # END Dinesh
+    # equivalence point START Hatim
+    parser.add_argument(
+        "--equi_point",
+        type=int,
+        help="0: run default mode 1 : run equivalence pointwise",
+        default=0,
+    )
+    parser.add_argument(
+        "--equi_file_name",
+        type=str,
+        help="Give file name of equivalence point with full path",
+        default="/home/hatim-s/gem5/equivalence-pointstxt",
+    )
+    # END Hatim
 
     # Run duration options
     parser.add_argument(
