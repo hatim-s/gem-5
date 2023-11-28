@@ -56,12 +56,12 @@
 #include "sim/full_system.hh"
 #include "sim/system.hh"
 
-// Start Headers added by Dinesh
+// Start Headers added by Hatim
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <string>
-// End Header Added by Dinesh
+// End Header Added by Hatim
 
 namespace gem5
 {
@@ -631,11 +631,11 @@ AtomicSimpleCPU::tick()
         data_write_req->setContext(cid);
         data_amo_req->setContext(cid);
     }
-    // START code edited by dinesh
+    // START code edited by Hatim
     std::string Function_Address[10000];
     int Function_Address_iterator = 0;
     std::string line;
-    std::ifstream ptr ("/home/hatim-s/gem5/pc-address.txt");
+    std::ifstream ptr ("/home/nirmal/gem5/gem5-hatim-x86/inputs/pc-address.txt");
                     if (ptr.is_open())
                     {
                             while ( getline (ptr,line) )
@@ -646,10 +646,10 @@ AtomicSimpleCPU::tick()
                             ptr.close();
                     }
                     else
-                    std::cout<<"Unable to open File \n"; 
+                    std::cout<<"Unable to open File \n";
         //  for(int i = 0; i <Function_Address_iterator;i++)
         //                { cout<<Function_Address[i]<<" ";}
-    // END code edited by Dinesh
+    // END code edited by Hatim
 
     SimpleExecContext &t_info = *threadInfo[curThread];
     SimpleThread *thread = t_info.thread;
@@ -733,19 +733,19 @@ AtomicSimpleCPU::tick()
                         curStaticInst->isFirstMicroop())) {
                 instCnt++;
             }
-            // START added by Dinesh
+            // START added by Hatim
             // PCStateBase pc = ;
-            //printf("Instruction count %ld Instruction PC %04lx \n",instCnt,pc.instAddr()); 
-            
+            //printf("Instruction count %ld Instruction PC %04lx \n",instCnt,pc.instAddr());
+
             Addr curr_pc = threadContexts[curThread]->pcState().instAddr();
             //As in the function we have strin in hexa decimal format and here it is decimal so first convert it into hexa decimal
             std::string hexa_pc;
-            
+
             int i =0;
             int no = 0;
             //for arm put while(i<8) as pc address is of 8 bytes
             //for x86 put while(i<16) as pc address is of 16 bytes
-            while(i<8)
+            while(i<16)
             {
             no = (curr_pc%16);
             curr_pc = (curr_pc/16);
@@ -755,36 +755,36 @@ AtomicSimpleCPU::tick()
             hexa_pc.insert(hexa_pc.begin(),((char)('a' + (no-10))));
             i++;
             }
-            
-            /* std::ofstream out("instructionPC.txt", std::ios::app);  
-                                    
+
+            /* std::ofstream out("instructionPC.txt", std::ios::app);
+
                 out<<hexa_pc<<endl;
-                                        
+
             out.close();
-            
-            std::ofstream pout("functionPC.txt", std::ios::app);  
+
+            std::ofstream pout("functionPC.txt", std::ios::app);
                   for(int i = 0; i <Function_Address_iterator;i++)
-                        {               
+                        {
                 pout<<Function_Address[i]<<endl;
             }
-                                        
+
             pout.close();
-            */      
+            */
             //cout<<" PC Value in Hex is :"<<hexa_pc<<" "<<Function_Address_iterator<<endl;
-            
+
             for(int i = 0; i <Function_Address_iterator;i++)
                         {
                 if(Function_Address[i].compare(hexa_pc)==0)
                 {
                     //cout<<"success:" <<Function_Address[i]<<endl;
-                    std::ofstream out("/home/hatim-s/gem5/instr.txt", std::ios::app);  
-                    out << instCnt <<" "<<hexa_pc<<std::endl; 
-                    //printf("Instruction count %ld Instruction PC %04lx \n",instCnt,pc.instAddr());    
+                    std::ofstream out("/home/nirmal/gem5/gem5-hatim-x86/outputs/inst-count.txt", std::ios::app);
+                    out << instCnt <<" "<<hexa_pc<<std::endl;
+                    //printf("Instruction count %ld Instruction PC %04lx \n",instCnt,pc.instAddr());
                     out.close();
                 }
 
              }
-            // END added by Dinesh 
+            // END added by Hatim
 
             if (simulate_inst_stalls && icache_access)
                 stall_ticks += icache_latency;
