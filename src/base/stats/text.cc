@@ -57,6 +57,10 @@
 #include "base/stats/info.hh"
 #include "base/str.hh"
 
+// Hatim Headers
+#include <vector>
+#include <string>
+
 namespace gem5
 {
 
@@ -71,6 +75,19 @@ namespace statistics
 {
 
 std::list<Info *> &statsList();
+
+// Hatim Vector Declaration
+std::vector<std::string> stat_names = {
+    "simSeconds", "simTicks", "simInsts", "system.cpu.numCycles",
+    "system.cpu.commitStats0.numInsts", "system.cpu.commit.branchMispredicts",
+    "system.l2.overallMisses::total", "system.cpu.iew.iqFullEvents",
+    "system.cpu.iew.lsqFullEvents","system.cpu.rename.ROBFullEvents",
+    "system.cpu.commitStats0.numFpInsts","system.cpu.commitStats0.numIntInsts",
+    "system.cpu.commitStats0.numLoadInsts","system.cpu.commitStats0.numStoreInsts",
+    "system.cpu.dcache.overallMisses::total", "system.cpu.icache.overallMisses::total",
+    "system.cpu.executeStats0.numBranches"
+};
+
 
 Text::Text()
     : mystream(false), stream(NULL), descriptions(false), spaces(false)
@@ -135,7 +152,7 @@ Text::begin()
 void
 Text::end()
 {
-    ccprintf(*stream, "\n---------- End Simulation Statistics   ----------\n");
+    ccprintf(*stream, "---------- End Simulation Statistics   ----------\n");
     stream->flush();
 }
 
@@ -278,6 +295,17 @@ ScalarPrint::update(Result val, Result total)
 void
 ScalarPrint::operator()(std::ostream &stream, bool oneLine) const
 {
+    // Hatim BEGIN (stat filtering) -------------------------------------
+    bool nameMatch = false;
+    for (int i = 0; i < stat_names.size(); i++){
+        if (stat_names[i] == name) {
+            nameMatch = true;
+            break;
+        }
+    }
+    if (nameMatch == false) return;
+    // Hatim END -------------------------------------
+
     if ((flags.isSet(nozero) && (!oneLine) && value == 0.0) ||
         (flags.isSet(nonan) && std::isnan(value)))
         return;
@@ -302,10 +330,11 @@ ScalarPrint::operator()(std::ostream &stream, bool oneLine) const
         ccprintf(stream, " %*s", cdfstrSpaces, cdfstr.str());
     if (!oneLine) {
         if (descriptions) {
-            if (!desc.empty())
-                ccprintf(stream, " # %s", desc);
+            if (!desc.empty()){
+                // ccprintf(stream, " # %s", desc);
+            }
         }
-        printUnits(stream);
+        // printUnits(stream);
         stream << std::endl;
     }
 }
@@ -384,14 +413,17 @@ VectorPrint::operator()(std::ostream &stream) const
             print(stream, flags.isSet(oneline));
         }
 
+        // Hatim BEGIN ----------------------------------------
         if (flags.isSet(oneline)) {
             if (descriptions) {
-                if (!desc.empty())
-                    ccprintf(stream, " # %s", desc);
+                if (!desc.empty()){
+                    // ccprintf(stream, " # %s", desc);
+                }
             }
-            printUnits(stream);
+            // printUnits(stream);
             stream << std::endl;
         }
+        // Hatim END -----------------------------------------
     }
 
     if (flags.isSet(statistics::total)) {
