@@ -805,7 +805,7 @@ def run(options, root, testsys, cpu_class):
 
             while len(line) > 0:
                 # print("line is::", str1.strip())
-                inst_count.append(int(line.strip()))
+                inst_count.append(int(line.strip().split()[0]))
                 line = f1.readline()
 
             f1.close()
@@ -815,41 +815,30 @@ def run(options, root, testsys, cpu_class):
             #    for line in read_data:
             #        print(line)
             #        inst_count.append(int(line[0].strip()))
-            """
-                for i in range(len(inst_count)) :
-                    # for j in xrange(np):
-                    testsys.cpu[0].scheduleInstStop(0, inst_count[i], "dumpstatistics")
-                    if i < len(inst_count)-1:
-                        exit_event =m5.simulate()
-                        m5.stats.dump()
-                        m5.stats.reset()
-                        print('Hatim: Exiting @ tick %i because %s\n' % (m5.curTick(), exit_event.getCause()))
-                        if exit_event.getCause == "target called exit()":
-                            break
-                    else:
-                        m5.stats.dump()
-                        m5.stats.reset()
-                        print('Diwan: Exiting as Last Phase \n')
-                        break
-                    #if(exit_event.getCause="")
-            """
+
             for i in range(len(inst_count)):
                 # for j in xrange(np):
                 # if i < len(inst_count):
                 testsys.cpu[0].scheduleInstStop(
                     0, inst_count[i], "dumpstatistics"
                 )
-            # if i < len(inst_count)-1:
+                # if i < len(inst_count)-1:
 
-            while 1:
+            with open('stats.txt', 'w') as stat_file:
+                print ("", end="", file=stat_file)
+
+            while True:
                 exit_event = m5.simulate()
-                m5.stats.dump()
-                m5.stats.reset()
+                with open('stats.txt', 'a') as stat_file:
+                    m5.stats.output = stat_file
+                    m5.stats.dump()
 
-                print(
-                    "Hatim: Exiting @ tick %i because %s\n"
-                    % (m5.curTick(), exit_event.getCause())
-                )
+                # m5.stats.reset()
+
+                # print(
+                #     "Hatim: Exiting @ tick %i because %s\n"
+                #     % (m5.curTick(), exit_event.getCause())
+                # )
                 if exit_event.getCause() == "target called exit()":
                     break
                 elif (
@@ -860,34 +849,15 @@ def run(options, root, testsys, cpu_class):
                         "Hello! creating an error here as application is done \n"
                     )
                     # intentionally creating an error here as application is done.
-                    m5.do_exit()
+                    m5.exit()
                     break
                 elif (
                     exit_event.getCause()
                     == "a thread reached the max instruction count"
                 ):
                     print("Hello! creating an error here as maxinsts reached")
-                    m5.do_exit()
+                    m5.exit()
                     break
-        """
-			while(1):
-			testsys.cpu[0].scheduleInstStop(0, 10000, "dumpstatistics")
-			exit_event =m5.simulate()
-			m5.stats.dump()
-			m5.stats.reset()
-			print('Hatim: Exiting @ tick %i because %s\n' % (m5.curTick(), exit_event.getCause()))
-			if exit_event.getCause() == "target called exit()":
-				break
-			elif exit_event.getCause() == "exiting with last active thread context":
-				print('Hello! creating an error here as application is done \n')
-				# intentionally creating an error here as application is done.
-				m5.do_exit()
-				break
-			elif exit_event.getCause() =="a thread reached the max instruction count":
-				print('Hello! creating an error here as maxinsts reached')
-				m5.do_exit()
-				break
-		"""
         #  END by Hatim
 
         # If checkpoints are being taken, then the checkpoint instruction

@@ -34,5 +34,7 @@ configs/dram/lowp_sweep.cfg
 .vscode
 inputs/
 outputs/
-arif-scripts/
+python-scripts/
+run-scripts/
 pc-address/
+src/cpu/simple/atomic.cc
